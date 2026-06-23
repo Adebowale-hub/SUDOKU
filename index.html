@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRUTAL SUDOKU // NEOBRUTALIST WEB APP</title>
+  <meta name="description" content="A premium, modern Sudoku game built in Neobrutalist design style. Solve grids across multiple difficulties, keep track of notes, check errors, and hear synth feedback!">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1 id="app-title">BRUTAL SUDOKU</h1>
+    <div class="controls-top">
+      <button class="btn icon-btn" id="btn-toggle-sound" title="Toggle Sound">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+      </button>
+      <button class="btn icon-btn" id="btn-open-rules" title="How to Play">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </button>
+      <button class="btn btn-accent" id="btn-trigger-new-game">NEW GAME</button>
+    </div>
+  </header>
+
+  <main class="card" id="main-game-card">
+    <!-- Status & Info bar -->
+    <div class="status-bar">
+      <div>
+        <span class="difficulty-badge" id="lbl-difficulty">MEDIUM</span>
+      </div>
+      <div id="box-mistakes">
+        MISTAKES: <span id="lbl-mistakes">0</span> / 3
+      </div>
+      <div class="timer-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span id="lbl-timer">00:00</span>
+        <button class="btn icon-btn" id="btn-pause-timer" style="width: 28px; height: 28px; padding: 2px; border-width: 2px; box-shadow: 2px 2px 0 var(--border);" title="Pause Game">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" id="icon-pause-play"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sudoku Board Container -->
+    <div class="sudoku-container">
+      <div class="sudoku-board" id="sudoku-board-grid" role="grid" aria-label="Sudoku Grid">
+        <!-- Cells generated programmatically (81 cells) -->
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="game-controls">
+      <!-- 1-9 keypad -->
+      <div class="keypad" id="digits-keypad">
+        <button class="btn keypad-btn" id="btn-keypad-1" data-val="1">1</button>
+        <button class="btn keypad-btn" id="btn-keypad-2" data-val="2">2</button>
+        <button class="btn keypad-btn" id="btn-keypad-3" data-val="3">3</button>
+        <button class="btn keypad-btn" id="btn-keypad-4" data-val="4">4</button>
+        <button class="btn keypad-btn" id="btn-keypad-5" data-val="5">5</button>
+        <button class="btn keypad-btn" id="btn-keypad-6" data-val="6">6</button>
+        <button class="btn keypad-btn" id="btn-keypad-7" data-val="7">7</button>
+        <button class="btn keypad-btn" id="btn-keypad-8" data-val="8">8</button>
+        <button class="btn keypad-btn" id="btn-keypad-9" data-val="9">9</button>
+      </div>
+
+      <!-- Action row -->
+      <div class="actions-row">
+        <button class="btn" id="btn-undo" title="Undo Move">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+          Undo
+        </button>
+        <button class="btn" id="btn-pencil" title="Toggle Pencil Notes (N)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          Notes
+        </button>
+        <button class="btn" id="btn-erase" title="Clear Cell (Backspace)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16l8-8 9 9-2 3Z"></path><path d="M19 11.5l-6-6"></path></svg>
+          Erase
+        </button>
+        <button class="btn btn-accent" id="btn-hint" title="Reveal Correct Value">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>
+          Hint
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Theme Dot Buttons -->
+  <div class="theme-selector" id="theme-controls">
+    <span>THEME:</span>
+    <button class="theme-dot theme-yellow active" data-theme="default" aria-label="Yellow Theme"></button>
+    <button class="theme-dot theme-mint" data-theme="mint" aria-label="Mint Theme"></button>
+    <button class="theme-dot theme-violet" data-theme="violet" aria-label="Violet Theme"></button>
+    <button class="theme-dot theme-dark" data-theme="dark" aria-label="Dark Theme"></button>
+  </div>
+
+  <footer>
+    NEOBRUTALIST STYLE WEB APP &copy; 2026 // <a href="#" id="lnk-footer-rules">RULES</a>
+  </footer>
+
+  <!-- CANVAS FOR CONFETTI -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- MODALS -->
+
+  <!-- Modal: Difficulty Selector / New Game -->
+  <div class="modal-overlay" id="modal-new-game">
+    <div class="modal">
+      <div class="modal-title">CHOOSE DIFFICULTY</div>
+      <div class="modal-content">
+        <p>Choose your challenge. Each puzzle has a guaranteed unique solution.</p>
+        <div class="difficulty-list">
+          <button class="btn btn-accent" id="btn-diff-easy" data-difficulty="easy">EASY</button>
+          <button class="btn" id="btn-diff-medium" data-difficulty="medium">MEDIUM</button>
+          <button class="btn" id="btn-diff-hard" data-difficulty="hard">HARD</button>
+          <button class="btn" id="btn-diff-expert" data-difficulty="expert">EXPERT</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="btn-close-new-game-modal">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: How to Play / Rules -->
+  <div class="modal-overlay" id="modal-rules">
+    <div class="modal">
+      <div class="modal-title">HOW TO PLAY</div>
+      <div class="modal-content">
+        <p>Sudoku is a logic puzzle. Fill the grid so that every row, column, and 3x3 region contains all digits from <strong>1 to 9</strong> without repetition.</p>
+        
+        <p style="font-weight: 700; margin-top: 5px;">KEYBOARD CONTROLS:</p>
+        <ul class="shortcut-list">
+          <li class="shortcut-item"><span>Move Selection</span> <span><kbd class="kbd">WASD</kbd> / <kbd class="kbd">&uparrow;&downarrow;&leftarrow;&rightarrow;</kbd></span></li>
+          <li class="shortcut-item"><span>Input Number</span> <span><kbd class="kbd">1</kbd> to <kbd class="kbd">9</kbd></span></li>
+          <li class="shortcut-item"><span>Delete / Erase</span> <span><kbd class="kbd">Backspace</kbd> / <kbd class="kbd">Del</kbd> / <kbd class="kbd">0</kbd></span></li>
+          <li class="shortcut-item"><span>Toggle Notes</span> <span><kbd class="kbd">N</kbd> / <kbd class="kbd">Space</kbd></span></li>
+          <li class="shortcut-item"><span>Undo Move</span> <span><kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Z</kbd> / <kbd class="kbd">U</kbd></span></li>
+        </ul>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-accent" id="btn-close-rules-modal">GOT IT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Game Over -->
+  <div class="modal-overlay" id="modal-game-over">
+    <div class="modal" style="border-color: var(--cell-conflict); box-shadow: 12px 12px 0 var(--cell-conflict);">
+      <div class="modal-title" style="color: var(--cell-conflict); border-color: var(--cell-conflict);">GAME OVER</div>
+      <div class="modal-content">
+        <p>You have made 3 mistakes and triggered a system fault.</p>
+        <p>Would you like to try again or restart this puzzle?</p>
+      </div>
+      <div class="modal-actions" style="justify-content: space-between;">
+        <button class="btn" id="btn-gameover-restart">RESTART PUZZLE</button>
+        <button class="btn btn-accent" id="btn-gameover-new">NEW GAME</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Victory -->
+  <div class="modal-overlay" id="modal-victory">
+    <div class="modal" style="border-color: var(--accent); box-shadow: 12px 12px 0 var(--accent);">
+      <div class="modal-title" style="color: var(--accent); border-color: var(--accent);">GRID SOLVED!</div>
+      <div class="modal-content">
+        <p>Congratulations, operative. You have completed the grid successfully.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; border: var(--border-width-thin) solid var(--border);">
+          <tr style="border-bottom: var(--border-width-thin) solid var(--border); background-color: var(--cell-initial);">
+            <th style="padding: 8px; text-align: left; font-weight: 700;">METRIC</th>
+            <th style="padding: 8px; text-align: right; font-weight: 700;">VALUE</th>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 8px;">Difficulty:</td>
+            <td style="padding: 8px; text-align: right; font-weight: 700;" id="victory-difficulty">MEDIUM</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 8px;">Time Elapsed:</td>
+            <td style="padding: 8px; text-align: right; font-family: var(--font-mono); font-weight: 700;" id="victory-time">05:42</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Mistakes:</td>
+            <td style="padding: 8px; text-align: right; font-weight: 700;" id="victory-mistakes">1 / 3</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-accent" id="btn-victory-new">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio synthesiser library -->
+  <script src="sound.js"></script>
+  <!-- Main Game Engine -->
+  <script src="app.js"></script>
+</body>
+</html>

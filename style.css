@@ -1,0 +1,583 @@
+/* Neobrutalist Sudoku Stylesheet */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@500;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  /* Default Cyber Yellow Theme */
+  --bg-app: #FFE600;
+  --bg-card: #FFFFFF;
+  --bg-grid: #FFFFFF;
+  --accent: #FF5E97;
+  --accent-hover: #FF2E74;
+  --text: #000000;
+  --border: #000000;
+  
+  --cell-empty: #FFFFFF;
+  --cell-initial: #EAEAEA;
+  --cell-selected: #A78BFA;
+  --cell-highlight: #EAE2FC;
+  --cell-conflict: #FF6B6B;
+  --cell-user: #2563EB;
+  
+  --border-width-thick: 4px;
+  --border-width-thin: 2px;
+  
+  --shadow-offset-card: 8px;
+  --shadow-offset-btn: 4px;
+  
+  --font-display: 'Outfit', sans-serif;
+  --font-sans: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+[data-theme="mint"] {
+  --bg-app: #34D399;
+  --bg-card: #FFFFFF;
+  --bg-grid: #FFFFFF;
+  --accent: #8B5CF6;
+  --accent-hover: #7C3AED;
+  --cell-selected: #FDE047;
+  --cell-highlight: #FEF9C3;
+  --cell-conflict: #FF8A8A;
+}
+
+[data-theme="violet"] {
+  --bg-app: #C084FC;
+  --bg-card: #FFFFFF;
+  --bg-grid: #FFFFFF;
+  --accent: #06B6D4;
+  --accent-hover: #0891B2;
+  --cell-selected: #F472B6;
+  --cell-highlight: #FCE7F3;
+  --cell-conflict: #FF6B6B;
+}
+
+[data-theme="dark"] {
+  --bg-app: #121214;
+  --bg-card: #27272A;
+  --bg-grid: #18181B;
+  --accent: #FFE600;
+  --accent-hover: #E6CE00;
+  --text: #FFFFFF;
+  --border: #FFFFFF;
+  
+  --cell-empty: #1E1E24;
+  --cell-initial: #3F3F46;
+  --cell-selected: #EC4899;
+  --cell-highlight: #47182F;
+  --cell-conflict: #EF4444;
+  --cell-user: #60A5FA;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.2rem;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--border);
+  -webkit-text-stroke: 1px var(--border);
+  color: var(--text);
+}
+
+.controls-top {
+  display: flex;
+  gap: 10px;
+}
+
+/* Base button styling - Neobrutalist style */
+.btn {
+  background-color: var(--bg-card);
+  color: var(--text);
+  border: var(--border-width-thick) solid var(--border);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 8px 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-offset-btn) var(--shadow-offset-btn) 0 var(--border);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: calc(var(--shadow-offset-btn) + 2px) calc(var(--shadow-offset-btn) + 2px) 0 var(--border);
+}
+
+.btn:active, .btn.active {
+  transform: translate(2px, 2px);
+  box-shadow: calc(var(--shadow-offset-btn) - 2px) calc(var(--shadow-offset-btn) - 2px) 0 var(--border);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+}
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+}
+
+.icon-btn {
+  padding: 8px;
+  border-radius: 0;
+  width: 44px;
+  height: 44px;
+}
+
+/* Cards */
+.card {
+  background-color: var(--bg-card);
+  border: var(--border-width-thick) solid var(--border);
+  box-shadow: var(--shadow-offset-card) var(--shadow-offset-card) 0 var(--border);
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Stats / Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: var(--border-width-thick) dashed var(--border);
+}
+
+.difficulty-badge {
+  background-color: var(--accent);
+  padding: 4px 10px;
+  border: var(--border-width-thin) solid var(--border);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.timer-box {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Sudoku Board */
+.sudoku-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.paused-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-card);
+  border: var(--border-width-thick) solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  display: none;
+  box-sizing: border-box;
+}
+
+.paused-overlay.active {
+  display: flex;
+}
+
+.sudoku-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--border);
+  border: var(--border-width-thick) solid var(--border);
+  box-sizing: border-box;
+}
+
+/* Grid borders for 3x3 blocks */
+.sudoku-cell {
+  background-color: var(--cell-empty);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.2rem;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  color: var(--cell-user);
+  outline: none;
+  aspect-ratio: 1 / 1;
+}
+
+.sudoku-cell[data-initial="true"] {
+  background-color: var(--cell-initial);
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Thick borders for 3x3 grid boxes */
+.sudoku-cell:nth-child(3n) {
+  border-right: var(--border-width-thick) solid var(--border);
+}
+.sudoku-cell:nth-child(9n) {
+  border-right: none;
+}
+.sudoku-cell:nth-child(n+19):nth-child(-n+27),
+.sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: var(--border-width-thick) solid var(--border);
+}
+
+/* Active / Select states */
+.sudoku-cell.selected {
+  background-color: var(--cell-selected) !important;
+  color: #000000 !important;
+  outline: var(--border-width-thick) solid var(--text);
+  z-index: 10;
+}
+
+.sudoku-cell.highlighted {
+  background-color: var(--cell-highlight);
+}
+
+.sudoku-cell.conflict {
+  background-color: var(--cell-conflict) !important;
+  color: #000000 !important;
+  animation: wiggle 0.3s ease;
+}
+
+/* Pencil / Notes Grid */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.note-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+/* Controls Grid */
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.keypad-btn {
+  aspect-ratio: 1 / 1;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.6rem;
+  padding: 0;
+  border-radius: 0;
+}
+
+.actions-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.actions-row .btn {
+  font-size: 0.95rem;
+  padding: 12px 0;
+  text-transform: uppercase;
+}
+
+/* Theme selector bottom */
+.theme-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.theme-dot {
+  width: 28px;
+  height: 28px;
+  border: var(--border-width-thin) solid var(--border);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--border);
+  transition: transform 0.1s ease;
+}
+
+.theme-dot:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--border);
+}
+
+.theme-dot.active {
+  border-width: var(--border-width-thick);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--border);
+}
+
+.theme-yellow { background-color: #FFE600; }
+.theme-mint { background-color: #34D399; }
+.theme-violet { background-color: #C084FC; }
+.theme-dark { background-color: #121214; border-color: #FFFFFF !important; box-shadow: 2px 2px 0 #FFFFFF !important; }
+.theme-dark.active { box-shadow: 4px 4px 0 #FFFFFF !important; }
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background-color: var(--bg-card);
+  border: var(--border-width-thick) solid var(--border);
+  box-shadow: 12px 12px 0 var(--border);
+  max-width: 500px;
+  width: 100%;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transform: translateY(20px);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-overlay.active .modal {
+  transform: translateY(0);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  border-bottom: var(--border-width-thick) solid var(--border);
+  padding-bottom: 8px;
+}
+
+.modal-content {
+  font-size: 1rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* Custom list layout in modals */
+.shortcut-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shortcut-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background-color: var(--cell-initial);
+  border: var(--border-width-thin) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.kbd {
+  background-color: var(--bg-app);
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  box-shadow: 1px 1px 0 var(--border);
+}
+
+/* Difficulty picker list */
+.difficulty-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.difficulty-list .btn {
+  padding: 15px 0;
+  text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes wiggle {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-1.5deg); }
+  40% { transform: translateX(5px) rotate(1.5deg); }
+  60% { transform: translateX(-4px) rotate(-1deg); }
+  80% { transform: translateX(3px) rotate(1deg); }
+  100% { transform: translateX(0); }
+}
+
+/* Board Win Animation */
+.sudoku-cell.win-animate {
+  animation: win-zoom 0.5s ease forwards;
+}
+
+@keyframes win-zoom {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); background-color: var(--accent); color: var(--bg-card); }
+  100% { transform: scale(1); }
+}
+
+/* Confetti canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* Footer info */
+footer {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+footer a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .sudoku-cell {
+    font-size: 1.4rem;
+  }
+
+  .keypad-btn {
+    font-size: 1.1rem;
+  }
+
+  .actions-row .btn {
+    font-size: 0.75rem;
+    padding: 8px 0;
+  }
+
+  .status-bar {
+    font-size: 0.9rem;
+  }
+  
+  .timer-box {
+    font-size: 1rem;
+  }
+}
