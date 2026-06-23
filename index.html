@@ -15,9 +15,7 @@
       <button class="btn icon-btn" id="btn-toggle-sound" title="Toggle Sound">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
       </button>
-      <button class="btn icon-btn" id="btn-open-rules" title="How to Play">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-      </button>
+      <button class="btn" id="btn-open-rules">RULES</button>
       <button class="btn btn-accent" id="btn-trigger-new-game">NEW GAME</button>
     </div>
   </header>
@@ -124,21 +122,29 @@
   <!-- Modal: How to Play / Rules -->
   <div class="modal-overlay" id="modal-rules">
     <div class="modal">
-      <div class="modal-title">HOW TO PLAY</div>
+      <div class="modal-title">RULES & HOW TO PLAY</div>
       <div class="modal-content">
-        <p>Sudoku is a logic puzzle. Fill the grid so that every row, column, and 3x3 region contains all digits from <strong>1 to 9</strong> without repetition.</p>
+        <p>Sudoku is a logic-based number-placement puzzle. The objective is to fill a 9&times;9 grid with digits so that each column, each row, and each of the nine 3&times;3 subgrids contain all of the digits from 1 to 9.</p>
         
-        <p style="font-weight: 700; margin-top: 5px;">KEYBOARD CONTROLS:</p>
+        <p style="font-weight: 700; margin-top: 5px;">CORE RULES:</p>
+        <ul style="padding-left: 20px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px;">
+          <li>Every <strong>row</strong> must contain digits 1-9 without duplicates.</li>
+          <li>Every <strong>column</strong> must contain digits 1-9 without duplicates.</li>
+          <li>Every <strong>3&times;3 box</strong> must contain digits 1-9 without duplicates.</li>
+          <li>No guessing is required; every puzzle has a single unique logical solution.</li>
+        </ul>
+        
+        <p style="font-weight: 700;">KEYBOARD SHORTCUTS:</p>
         <ul class="shortcut-list">
-          <li class="shortcut-item"><span>Move Selection</span> <span><kbd class="kbd">WASD</kbd> / <kbd class="kbd">&uparrow;&downarrow;&leftarrow;&rightarrow;</kbd></span></li>
-          <li class="shortcut-item"><span>Input Number</span> <span><kbd class="kbd">1</kbd> to <kbd class="kbd">9</kbd></span></li>
-          <li class="shortcut-item"><span>Delete / Erase</span> <span><kbd class="kbd">Backspace</kbd> / <kbd class="kbd">Del</kbd> / <kbd class="kbd">0</kbd></span></li>
+          <li class="shortcut-item"><span>Move Focus</span> <span><kbd class="kbd">WASD</kbd> / <kbd class="kbd">&uparrow;&downarrow;&leftarrow;&rightarrow;</kbd></span></li>
+          <li class="shortcut-item"><span>Write Digit</span> <span><kbd class="kbd">1</kbd> to <kbd class="kbd">9</kbd></span></li>
+          <li class="shortcut-item"><span>Erase Number</span> <span><kbd class="kbd">Backspace</kbd> / <kbd class="kbd">Delete</kbd></span></li>
           <li class="shortcut-item"><span>Toggle Notes</span> <span><kbd class="kbd">N</kbd> / <kbd class="kbd">Space</kbd></span></li>
-          <li class="shortcut-item"><span>Undo Move</span> <span><kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Z</kbd> / <kbd class="kbd">U</kbd></span></li>
+          <li class="shortcut-item"><span>Undo Action</span> <span><kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Z</kbd> / <kbd class="kbd">U</kbd></span></li>
         </ul>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-accent" id="btn-close-rules-modal">GOT IT</button>
+        <button class="btn btn-accent" id="btn-close-rules-modal">DISMISS</button>
       </div>
     </div>
   </div>
@@ -188,6 +194,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Snackbar for wrong moves -->
+  <div class="snackbar" id="snackbar" role="alert" aria-live="assertive"></div>
 
   <!-- Audio synthesiser library -->
   <script src="sound.js"></script>
